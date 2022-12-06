@@ -1,0 +1,46 @@
+{% extends "learning_logs/base.html" %}
+{% load bootstrap4 %}
+
+
+{% block page_header %}
+  <h2>Зарегестрировать ваш аккаунт</h2>
+{% endblock page_header %}
+
+{% block content %}
+
+  <form action="{% url 'users:register' %}" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">Зарегестрировать</button>
+    {% endbuttons %}
+    <input type="hidden" name="next" 
+      value="{% url 'learning_logs:index' %}" />
+  </form>
+  <script>
+  $('#id_username').keyup(function () {
+    // создаем AJAX-вызов
+    $.ajax({
+        data: $(this).serialize(), // получаяем данные формы
+        url: "{% url 'users:validate_username' %}",
+        // если успешно, то
+        success: function (response) {
+            if (response.is_taken == true) {
+                $('#id_username').removeClass('is-valid').addClass('is-invalid');
+                $('#id_username').after('Это имя пользователя недоступно!')
+            }
+            else {
+                $('#id_username').removeClass('is-invalid').addClass('is-valid');
+                $('#usernameError').remove();
+            }
+        },
+        // если ошибка, то
+        error: function (response) {
+            // предупредим об ошибке
+            console.log(response.responseJSON.errors)
+        }
+    });
+    return false;
+});
+</script>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "learning_logs/base.html" %}
+{% load bootstrap4 %}
+
+{% block page_header %}
+  <h2>Добавить новую запись</h2>
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+{% endblock page_header %}
+
+{% block content %}
+<form action="{% url 'learning_logs:new_entry' topic.id %}" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">Добавить</button>
+    {% endbuttons %}
+    <input type="hidden" name="next" 
+      value="{% url 'learning_logs:topic' topic.id %}" />
+</form>
+{% endblock content %}
