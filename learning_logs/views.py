@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,7 @@ def topics(request):
 @login_required
 def topic(request, topic_id):
     """Выводит одну тему и все записи по ней"""
-    topic = Topic.objects.get(id=topic_id)
+    topic = get_object_or_404(Topic, id=topic_id)
     entries = topic.entry_set.order_by('-date_added')
 
     check_topic_owner(request=request, topic=topic)
@@ -48,7 +48,8 @@ def new_topic(request):
 @login_required
 def new_entry(request, topic_id):
     """Добавляет новую запись по конкретной теме"""
-    topic = Topic.objects.get(id=topic_id)
+    topic = get_object_or_404(Topic, id=topic_id)
+
     
     check_topic_owner(request=request, topic=topic)
 
@@ -72,7 +73,7 @@ def new_entry(request, topic_id):
 @login_required
 def edit_entry(request, entry_id):
     """Редактирует существующую запись"""
-    entry = Entry.objects.get(id=entry_id)
+    entry = get_object_or_404(Entry, id=entry_id)
     topic = entry.topic
 
     check_topic_owner(request=request, topic=topic)
